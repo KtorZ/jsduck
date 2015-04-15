@@ -23,6 +23,22 @@ module JsDuck
         # %a - anchor text for link
         @tpl = opts.link || '<a href="%c%#%m">%a</a>'
       end
+    
+      # Generates HTML link to a foreign API
+      def link_to_foreign_type(namespace, extension, anchor_text = nil)
+        tpl = '<a target="_blank" href="%c%m">%a</a>'
+        tpl.gsub(/(%\w)/) do
+          case $1
+          when '%c'
+            @relations.foreign_types(namespace)
+          when '%m'
+            extension
+          when '%a'
+            Util::HTML.escape(anchor_text || extension)
+          else $1
+          end
+        end
+      end
 
       # Generates HTML link to class or member applying the link
       # template.

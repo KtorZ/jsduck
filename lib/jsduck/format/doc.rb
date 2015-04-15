@@ -141,6 +141,11 @@ module JsDuck
         out
       end
 
+      # Creates a link to a foreign type
+      def link_to_foreign_type(namespace, extension, anchor_text = nil)
+        @link_renderer.link_to_foreign_type(namespace, extension, anchor_text)
+      end
+
       # Creates a link based on the link template.
       def link(cls, member, anchor_text, type=nil, static=nil)
         @link_renderer.link(cls, member, anchor_text, type, static)

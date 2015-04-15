@@ -13,9 +13,10 @@ module JsDuck
     # Returns list of all classes
     attr_reader :classes
 
-    def initialize(classes = [], ignorables = [])
+    def initialize(classes = [], ignorables = [], foreign_types = [])
       @classes = classes
       @external_classes = ExternalClasses.new(ignorables)
+      @foreign_types = foreign_types
 
       # First build class lookup table; building lookup tables for
       # mixins and subclasses will depend on that.
@@ -39,6 +40,13 @@ module JsDuck
     # Looks up class by name, nil if not found
     def [](classname)
       @lookup[classname]
+    end
+
+    # Looks up for a foreign type
+    def foreign_types(namespace)
+      type = @foreign_types.select{ |type| type.has_key? namespace }.first
+      type = type[namespace] unless type.nil?
+      return type
     end
 
     # Returns true if class is in list of ignored classes.

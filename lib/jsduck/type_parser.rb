@@ -320,15 +320,32 @@ module JsDuck
     #
     #     <type-arguments> ::= <alteration-type> [ "," <alteration-type> ]*
     #
-    #     <ident-chain> ::= <ident> [ "." <ident> ]*
+    #     <ident-chain> ::= <ident> [ "." <ident> ] | <foreign-type>*
     #
     #     <ident> ::= [a-zA-Z0-9_]+
     #
+    #     <foreign-type> ::= [a-zA-Z0-9_]+: <ident> <ident>?
+    #
     def type_name
-      name = @input.scan(/[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*|\*/)
+      reNamespace = /\w+:\s+/m
+      name = @input.scan(reNamespace)
+      name ||= @input.scan(/[a-zA-Z0-9_]+(\.[a-zA-Z0-9_]+)*|\*/)
 
       if !name
         return false
+      elsif name =~ reNamespace
+        namespace = name.sub(/:\s+/m, "")
+        extension = @input.scan(/\s*\S+\s*/m)
+        anchor_text = @input.scan(/\s*\S+\s*/m) unless @input.eos?
+
+        unless extension && namespace && @relations.foreign_types(namespace)
+          @error = namespace || @input.string
+          return false
+        else
+          extension.strip!
+          anchor_text.strip! unless anchor_text.nil?
+          @out << @formatter.link_to_foreign_type(namespace, extension, anchor_text)
+        end
       elsif @relations[name]
         @out << @formatter.link(name, nil, name)
       elsif @primitives[name]

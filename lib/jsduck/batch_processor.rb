@@ -62,7 +62,7 @@ module JsDuck
     # classes inside Relations container.
     def to_class_objects(docs, opts)
       classes = docs.map {|d| Class.new(d) }
-      Relations.new(classes, opts.external)
+      Relations.new(classes, opts.external, opts.foreign_types)
     end
 
     # Do all kinds of post-processing on Relations object.

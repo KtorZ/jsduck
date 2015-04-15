@@ -536,6 +536,22 @@ module JsDuck
           @opts.external += classes
         end
 
+        attribute :foreign_types, []
+        option('--foreign-types=appcelerator ~> http://docs.appcelerator.com/titanium/3.0/#!/api/', Array,
+          "Allow you to add references to external API through namespace.",
+          "",
+          "A supplied namespace might be used when specifying a type-name between curly brackets.",
+          "The syntax is strictly the following",
+          "<namespace>: <URL extension> [<anchor text>]",
+          "The anchor text is optionnal, if ommited, the URL extension will be used",
+          "as anchor. In such a way, it is possible to match quite well restful API", 
+          "that map their classes and objects to URL; So do jsduck.") do |type|
+          re = /(\w+)\s*~>\s*(\S+)/m
+          if matches = type[0].match(re)
+            @opts.foreign_types.push Hash[*matches[1..2]]
+          end
+        end
+
         attribute :ext4_events
         option('--[no-]ext4-events',
           "Forces Ext4 options param on events. (AUTO)",
