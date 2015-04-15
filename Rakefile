@@ -98,46 +98,46 @@ end
 def compress
   load_sdk_vars
 
-  # Clean up template-min/ left over from previous compress task
+#  # Clean up template-min/ left over from previous compress task
   system("rm", "-rf", "template-min")
-  # Copy template/ files to template-min/
+#  # Copy template/ files to template-min/
   system("cp", "-r", "template", "template-min")
-  # Now do everything that follows in template-min/ dir
+#  # Now do everything that follows in template-min/ dir
   dir = "template-min"
 
-  # Create JSB3 file for Docs app
-  system("sencha", "create", "jsb", "-a", "http://localhost/docs/", "-p", "#{dir}/app.jsb3")
-  # Concatenate files listed in JSB3 file
-  system("sencha", "build", "-p", "#{dir}/app.jsb3", "-d", dir)
-
-  # Remove intermediate build files
-  system("rm", "#{dir}/app.jsb3")
-  system("rm", "#{dir}/all-classes.js")
-  # Replace app.js with app-all.js
-  system("mv", "#{dir}/app-all.js", "#{dir}/app.js")
-  # Remove the entire app/ dir
-  system("rm", "-r", "#{dir}/app")
-
-  # Change CSS links in print-template.html and index-template.html files
+#  # Create JSB3 file for Docs app
+#  system("sencha", "create", "jsb", "-a", "http://localhost/docs/", "-p", "#{dir}/app.jsb3")
+#  # Concatenate files listed in JSB3 file
+#  system("sencha", "build", "-p", "#{dir}/app.jsb3", "-d", dir)
+#
+#  # Remove intermediate build files
+#  system("rm", "#{dir}/app.jsb3")
+#  system("rm", "#{dir}/all-classes.js")
+#  # Replace app.js with app-all.js
+#  system("mv", "#{dir}/app-all.js", "#{dir}/app.js")
+#  # Remove the entire app/ dir
+#  system("rm", "-r", "#{dir}/app")
+#
+#  # Change CSS links in print-template.html and index-template.html files
   rewrite_css_links(dir, "print-template.html")
   rewrite_css_links(dir, "index-template.html")
-
-  # Concatenate CSS and JS files referenced in template.html file
+#
+#  # Concatenate CSS and JS files referenced in template.html file
   template_html = "#{dir}/template.html"
   html = IO.read(template_html)
   html = combine_css(html, dir)
   html = combine_js(html, dir)
   File.open(template_html, 'w') {|f| f.write(html) }
-
-  # Clean up SASS files
-  # (But keep prettify lib, which is needed for source files)
+#
+#  # Clean up SASS files
+#  # (But keep prettify lib, which is needed for source files)
   system "rm -rf #{dir}/resources/css/docs-ext.css"
   system "rm -rf #{dir}/resources/css/viewport.css"
   system "rm -rf #{dir}/resources/sass"
   system "rm -rf #{dir}/resources/codemirror"
   system "rm -rf #{dir}/resources/.sass-cache"
-
-  # Empty the extjs dir, leave only the main JS file and images
+#
+#  # Empty the extjs dir, leave only the main JS file and images
   system "rm -rf #{dir}/extjs"
   system "mkdir #{dir}/extjs"
   system "cp template/extjs/ext-all.js #{dir}/extjs"
@@ -226,6 +226,7 @@ task :configure => [:get_extjs, :config_file]
 
 # Run compass to generate CSS files
 task :sass do
+  system "compass clean template/resources/sass"
   system "compass compile --quiet template/resources/sass"
 end
 
