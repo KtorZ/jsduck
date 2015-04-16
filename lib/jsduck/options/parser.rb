@@ -545,7 +545,11 @@ module JsDuck
           "<namespace>: <URL extension> [<anchor text>]",
           "The anchor text is optionnal, if ommited, the URL extension will be used",
           "as anchor. In such a way, it is possible to match quite well restful API", 
-          "that map their classes and objects to URL; So do jsduck.") do |type|
+          "that map their classes and objects to URL; So do jsduck.",
+          "",
+          "The namespace has to be supplied in this --foreign-types option in the following way",
+          "<namespace> ~> <related-URL>",
+          "This will bind the namespace <namespace> to the url <related-URL>.") do |type|
           re = /(\w+)\s*~>\s*(\S+)/m
           if matches = type[0].match(re)
             @opts.foreign_types.push Hash[*matches[1..2]]
